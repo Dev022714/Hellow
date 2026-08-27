@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Babi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f3e8ff;
+            min-height: 100vh;
+            /* Support dynamic viewport height for mobile browsers */
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            padding: 1rem;
+        }
+
+        .card {
+            background-color: #ffffff;
+            /* Fluid padding based on screen size */
+            padding: clamp(1.5rem, 5vw, 2.5rem);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15);
+            text-align: center;
+            /* Responsive width layout */
+            width: min(90%, 450px);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #6b21a8;
+            margin-bottom: 1.25rem;
+            /* Fluid typography for heading */
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+        }
+
+        p {
+            color: #4c1d95;
+            /* Fluid typography for paragraph */
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            word-wrap: break-word;
+        }
+
+        .btn {
+            background-color: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            /* Responsive button text size */
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn:hover {
+            background-color: #7c3aed;
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            user-select: none;
+            animation: explode 60s cubic-bezier(0.05, 0.9, 0.1, 1) forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.3) rotate(0deg);
+            }
+            2% {
+                transform: translate(var(--x), var(--y)) scale(1.2) rotate(180deg);
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(var(--x) * 1.1), calc(var(--y) + 30px)) scale(1.4) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- First Screen -->
+    <div id="screen1" class="card">
+        <h1>Good Morning, Babi!</h1>
+        <button class="btn" onclick="nextScreen()">Please Proceed</button>
+    </div>
+
+    <!-- Second Screen -->
+    <div id="screen2" class="card hidden">
+        <p>Do well in your internship today, my love! I'm sorry if I upset you yesterday on our monthsary. I love you! &lt;3😚</p>
+        <button class="btn" onclick="splatter(event)">💜</button>
+    </div>
+
+    <script>
+        function nextScreen() {
+            document.getElementById('screen1').classList.add('hidden');
+            document.getElementById('screen2').classList.remove('hidden');
+        }
+
+        function splatter(event) {
+            const items = ['💜', '🟪', '🌸', '🪻', '🌺', '✨', '👩🏻‍⚕️'];
+            const particleCount = 80;
+            
+            const rect = event.target.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            // Dynamically adjust burst radius based on screen width
+            const maxDistance = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+            const minDistance = 60;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = items[Math.floor(Math.random() * items.length)];
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * (maxDistance - minDistance) + minDistance;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                // Scale particle font size dynamically for mobile vs desktop
+                const baseSize = window.innerWidth < 480 ? 0.9 : 1.2;
+                const size = Math.random() * 1.2 + baseSize;
+
+                particle.style.left = `${startX}px`;
+                particle.style.top = `${startY}px`;
+                particle.style.fontSize = `${size}rem`;
+                particle.style.setProperty('--x', `${x}px`);
+                particle.style.setProperty('--y', `${y}px`);
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 60000);
+            }
+        }
+    </script>
+</body>
+</html>
